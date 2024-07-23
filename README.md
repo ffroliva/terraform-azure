@@ -3,13 +3,34 @@
  private network. In this config the subnet gives permission to use blob storage for
  the containe group.
 
+# Design Architecture
 
+```mermaid
+graph TD
+    PublicIP[Public IP]
+    LoadBalancer[Load Balancer]
+    BackendPool[Backend Pool]
+    Vnet[vnet]
+    LBRule[LB rule]
+    Probe[Probe]
+    Subnet[Subnet]
+    ContainerGroup[Container group]
+    DockerApp[Docker app]
+    SecurityGroup[Security Group]
 
+    PublicIP --> LoadBalancer
+    LoadBalancer --> BackendPool
+    BackendPool --> Vnet
 
-# Public IP - Load balancer - Backend pool ---- vnet
-#                   |             |              |
-#                LB rule          |           subnet ----- Container group - Docker app 
-#                   |             |              |                               |
-#                 Probe           |        Security Group                        |
-#                                 |                                              |
-#                                 └----------------------------------------------┘
+    LoadBalancer --> LBRule
+    LBRule --> Probe
+
+    Vnet --> Subnet
+    Subnet --> ContainerGroup
+    ContainerGroup --> DockerApp
+
+    Subnet --> SecurityGroup
+    SecurityGroup --> DockerApp
+
+    Probe -.-> BackendPool
+```
